@@ -1,0 +1,55 @@
+from PIL import Image
+
+def encrypt_image(input_path, output_path, key):
+    try:
+        image = Image.open(input_path)
+        encrypted_image = image.copy()
+        pixels = encrypted_image.load()
+
+        for i in range(encrypted_image.size[0]):
+            for j in range(encrypted_image.size[1]):
+                r, g, b = pixels[i, j]
+                pixels[i, j] = ((r + key) % 256, (g + key) % 256, (b + key) % 256)
+
+        encrypted_image.save(output_path)
+        print(f"Image encrypted and saved to {output_path}")
+    except Exception as e:
+        print(f"Error encrypting the image: {e}")
+
+def decrypt_image(input_path, output_path, key):
+    try:
+        image = Image.open(input_path)
+        decrypted_image = image.copy()
+        pixels = decrypted_image.load()
+
+        for i in range(decrypted_image.size[0]):
+            for j in range(decrypted_image.size[1]):
+                r, g, b = pixels[i, j]
+                pixels[i, j] = ((r - key) % 256, (g - key) % 256, (b - key) % 256)
+
+        decrypted_image.save(output_path)
+        print(f"Image decrypted and saved to {output_path}")
+    except Exception as e:
+        print(f"Error decrypting the image: {e}")
+
+def main():
+    while True:
+        choice = input("Do you want to (e)ncrypt or (d)ecrypt an image? (e/d): ").lower()
+        if choice in ['e', 'd']:
+            input_path = input("Enter the path to the input image: ")
+            output_path = input("Enter the path to save the output image: ")
+            key = int(input("Enter the encryption/decryption key (an integer): "))
+
+            if choice == 'e':
+                encrypt_image(input_path, output_path, key)
+            else:
+                decrypt_image(input_path, output_path, key)
+        else:
+            print("Invalid choice. Please enter 'e' to encrypt or 'd' to decrypt.")
+        
+        continue_choice = input("Do you want to perform another operation? (yes/no): ").lower()
+        if continue_choice != 'yes':
+            break
+
+if __name__ == "__main__":
+    main()
